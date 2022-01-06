@@ -6,7 +6,7 @@
 /*   By: mbaioumy <mbaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/17 14:56:37 by mbaioumy          #+#    #+#             */
-/*   Updated: 2021/12/22 17:04:39 by mbaioumy         ###   ########.fr       */
+/*   Updated: 2022/01/05 18:50:08 by mbaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int		checknl(char *str)
 	return (1);
 }
 
-size_t  ft_strlen(const char *str)
+size_t  ft_strlen(char *str)
 {
         size_t  len;
 
@@ -94,7 +94,7 @@ char	*ft_strjoin(char  **s1, char  *s2)
 		return (NULL);
 	tab = cat(tab, *s1, 0);
 	tab = cat(tab, s2, ft_strlen(*s1));
-	free(*s1);
+	//free(*s1);
 	return (tab);
 }
 

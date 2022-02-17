@@ -17,41 +17,53 @@
 #include <string.h>
 #include "get_next_line.h"
 
-void	freethis(char *ptr)
+int		checknl(char *str)
 {
-	free(ptr);
+	int	i;
+
+	i = 0;
+	while(str[i])
+	{
+		if(str[i] == '\n')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
-char	*get_line(char **str, int var)
+char	*get_line(char *str, int var)
 {
 	int		i;
 	char	*tmp;
+	//char	*tmp2;
 
 	i = 0;
-	if (!**str)
+	if (!*str)
 		return (NULL);
 	if (var)
 	{
-		while (str[0][i] != '\n' && str[0][i])
+		while (str[i] != '\n' && str[i])
 			i++;
 		tmp = ft_substr(str, 0, i + 1);
-		tmp[i + 1] = '\0';
 		return (tmp);
 	}
 	else
 	{
-		while (str[0][i] != '\n' && str[0][i])
+		while (str[i] != '\n' && str[i])
 			i++;
-		*str = ft_substr(str, i + 1, ft_strlen(*str));
-		return (*str);
+		if (str[i] == '\n')
+			i += 1;
+		tmp = ft_substr(str, i, ft_strlen(str));
+		return (tmp);
 	}
-	return (*str);
+	return (NULL);
 }
 
 char	*magic(char *str, int fd)
 {
 	int			c;
 	char		*tmp;
+	char 		*tmp2;
 	static char	*line;
 
 	c = 1;
@@ -60,18 +72,22 @@ char	*magic(char *str, int fd)
 	while (checknl(line))
 	{
 		c = read(fd, str, BUFFER_SIZE);
-		str[c] = '\0';
 		if (c <= 0)
 			break;
-		line = ft_strjoin(&line, str);
+		str[c] = '\0';
+		tmp = line;
+		line = ft_strjoin(line, str);
+		free(tmp);
+		tmp=NULL;
 	}
-	tmp = get_line(&line, 1);
-	line = get_line(&line, 0);
-	if (!c)
-	{
-		freethis(line);
-		//freethis(str);
-	}
+	//printf("str: %p\nline: %p\ntmp: %p\ntmp2: %p\n", str, line, tmp, tmp2);
+	tmp2 = line;
+	tmp = get_line(tmp2, 1);
+	line = get_line(tmp2, 0);
+	free(tmp2);
+	tmp2 = NULL;
+	free(str);
+	str=NULL;
 	return (tmp);
 }
 
@@ -81,22 +97,22 @@ char    *get_next_line(int fd)
 
 	str = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
 	if (!str)
-		return (NULL);
+		return (0);
 	str = magic(str, fd);
-	freethis(str);
 	return (str);
 }
 
-// int main()
+// int main(int argc, char **argv)
 // {
 // 	int file;
 // 	int i = 1;
 
-// 	file = open("41_with_nl", O_RDONLY);
-// 	while (i < 41)
+// 	file = open("42_no_nl", O_RDONLY);
+// 	while (i < 15)
 // 	{
-// 	 	printf("%d: %s", i, get_next_line(file));
+// 	 	printf("%d: %s\n", i, get_next_line(file));
 // 		i++;
 // 	}
+// 	system("leaks a.out");
 // 	return (0);
-// }
+//  }

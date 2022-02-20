@@ -10,21 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "get_next_line.h"
 
-int		checknl(char *str)
+void	freethis(void *ptr)
+{
+	free(ptr);
+	ptr = NULL;
+}
+
+int	checknl(char *str)
 {
 	int	i;
 
 	i = 0;
-	while(str[i])
+	while (str[i])
 	{
-		if(str[i] == '\n')
+		if (str[i] == '\n')
 			return (0);
 		i++;
 	}
@@ -35,7 +36,6 @@ char	*get_line(char *str, int var)
 {
 	int		i;
 	char	*tmp;
-	//char	*tmp2;
 
 	i = 0;
 	if (!*str)
@@ -63,7 +63,7 @@ char	*magic(char *str, int fd)
 {
 	int			c;
 	char		*tmp;
-	char 		*tmp2;
+	char		*tmp2;
 	static char	*line;
 
 	c = 1;
@@ -73,25 +73,21 @@ char	*magic(char *str, int fd)
 	{
 		c = read(fd, str, BUFFER_SIZE);
 		if (c <= 0)
-			break;
+			break ;
 		str[c] = '\0';
 		tmp = line;
 		line = ft_strjoin(line, str);
-		free(tmp);
-		tmp=NULL;
+		freethis(tmp);
 	}
-	//printf("str: %p\nline: %p\ntmp: %p\ntmp2: %p\n", str, line, tmp, tmp2);
 	tmp2 = line;
 	tmp = get_line(tmp2, 1);
 	line = get_line(tmp2, 0);
-	free(tmp2);
-	tmp2 = NULL;
-	free(str);
-	str=NULL;
+	freethis(tmp2);
+	freethis(str);
 	return (tmp);
 }
 
-char    *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
 	char	*str;
 
@@ -107,7 +103,7 @@ char    *get_next_line(int fd)
 // 	int file;
 // 	int i = 1;
 
-// 	file = open("42_no_nl", O_RDONLY);
+// 	file = open("41_with_nl", O_RDONLY);
 // 	while (i < 15)
 // 	{
 // 	 	printf("%d: %s\n", i, get_next_line(file));
